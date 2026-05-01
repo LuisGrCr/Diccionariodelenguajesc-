@@ -106,7 +106,9 @@ void Diccionariodedatos::menuDatos(int op){
     }while(op != 5);
 }
 
-void Diccionariodedatos::creaEntidad(){ printf("\nTrabajando...\n"); }
+void Diccionariodedatos::creaEntidad(){ 
+    printf("\nTrabajando...\n");
+ }
 void Diccionariodedatos::consultaEntidades(){ printf("\nTrabajando...\n"); }
 void Diccionariodedatos::eliminaEntidad(){ printf("\nTrabajando...\n"); }
 void Diccionariodedatos::modificaEntidad(){ printf("\nTrabajando...\n"); }
@@ -121,46 +123,42 @@ void Diccionariodedatos::consultaRegistro(){ printf("\nTrabajando...\n"); }
 void Diccionariodedatos::eliminaRegistro(){ printf("\nTrabajando...\n"); }
 void Diccionariodedatos::modificaRegistro(){ printf("\nTrabajando...\n"); }
 
-int Diccionariodedatos::nuevoDiccionario(){
-    char nombre[MAX]
-    long cab = -1;
-
-    printf("\nNombre del archivo: ");
-    scanf("%[^\n]",nombre);
-    getchar();
-
-    ifstream temp(nombre, ios::binary);
-    if(temp.is_open()){
-        printf("\nEl archivo ya existe\n");
-        temp.close();
-        return 0;
-    }
-
-    ofstream nuevo(nombre, ios::binary);
-    if(!nuevo) return 0;
-
-    nuevo.write((char*)&cab, sizeof(long));
-    nuevo.close();
-
-    arch.open(nombre, ios::in | ios::out | ios::binary);
-
-    if(!arch.is_open()) return 0;
-
-    printf("\nArchivo creado correctamente\n");
-    return 1;
-
-}
-
-int CDiccionario::abrirDiccionario(){
+void Diccionariodedatos::nuevoDiccionario()
+{
     char nombre[50];
+    printf("\nNombre del nuevo diccionario: ");
+    scanf("%s", nombre);
+
+    //Verificamos que no exista abriendolo en modo lectura
+    archivo = fopen(nombre, "rb");
+    if(archivo)
+    {
+        printf("\nEl archivo ya existe\n");
+        fclose(archivo);
+    }else{
+
+        printf("\nEl archivo NO existe, creando...");
+        archivo = fopen(nombre, "wb+");
+        if(!archivo)
+        {
+            printf("\nError al crear el archivo");
+            return;
+        }
+        printf("\nArchivo %s creado correctamente\n", nombre);
+        escribeCabEntidades(-1);
+        fclose(archivo);
+    }
+}
+int Diccionariodedatos::abrirDiccionario(){
+    char nombre[MAX];
 
     printf("\nNombre del archivo: ");
-    scanf("%49s", nombre);
+    scanf("%98[^\n]", nombre);
     getchar();
 
-    arch.open(nombre, ios::in | ios::out | ios::binary);
+    archivo = fopen(nombre, "rb+");
 
-    if(!arch.is_open()){
+    if(archivo == NULL){
         printf("\nNo se pudo abrir el archivo\n");
         return 0;
     }
@@ -169,9 +167,11 @@ int CDiccionario::abrirDiccionario(){
     return 1;
 }
 
-void CDiccionario::insertaEntidad(Entidad nuevo, long dir){}
-void CDiccionario::escribeCabeceraEntidades(long cab){}
-void CDiccionario::reescribeEntidad(Entidad ent, long dir){}
-Entidad CDiccionario::leeEntidad(long dir){ return activa; }
-long CDiccionario::getCabEntidades(){ return -1; }
-Entidad CDiccionario::capturaEntidad(){ return activa; }
+void Diccionariodedatos::insertarEntidad(ENTIDAD nuevo, long dir){
+    printf("\n----------Trabajando----------\n");
+}
+void Diccionariodedatos::escribeCabEntidades(long cab){}
+void Diccionariodedatos::reescribeEntidad(ENTIDAD ent, long dir){}
+ENTIDAD Diccionariodedatos::leeEntidad(long dir){ return activa; }
+long Diccionariodedatos::getCabEntidades(){ return -1; }
+ENTIDAD Diccionariodedatos::capturaEntidad(){ return activa; }
