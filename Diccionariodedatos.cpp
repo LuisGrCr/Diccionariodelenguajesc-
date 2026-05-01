@@ -4,10 +4,11 @@ Diccionariodedatos::Diccionariodedatos(){
     NumAtributos = 0;
     tamBloque = 0;
     dirActiva = -1;
-    int op = leerEntero();
-    menuPrincipal(op);
+    int op;
+    menuPrincipal(&op);
 }
 //lee entero
+
 int Diccionariodedatos::leerEntero(){
     int num;
     char buffer[MAX];
@@ -22,16 +23,16 @@ int Diccionariodedatos::leerEntero(){
     }
 }
 
-void Diccionariodedatos::menuPrincipal(int op){
+void Diccionariodedatos::menuPrincipal(int *op){
     do{
         printf("\n-----Menu Principal-----\n");
         printf("1.-Nuevo diccionario\n");
         printf("2.-Abrir diccionario\n");
         printf("3.-Salir\n");
 
-        op = leerEntero();
+        *op = leerEntero();
 
-        switch(op){
+        switch(*op){
             case 1:
                 if(nuevoDiccionario()) menuEntidades(op);
                 break;
@@ -39,7 +40,7 @@ void Diccionariodedatos::menuPrincipal(int op){
                 if(abrirDiccionario()) menuEntidades(op);
                 break;
         }
-    }while(op != 3);
+    }while(*op != 3);
 }
 
 int Diccionariodedatos::nuevoDiccionario()
@@ -90,7 +91,7 @@ int Diccionariodedatos::abrirDiccionario(){
     return 1;
 }
 
-void Diccionariodedatos::menuEntidades(int op){
+void Diccionariodedatos::menuEntidades(int *op){
     do{
         printf("\n-----MENU ENTIDADES-----\n");
         printf("1.-Nueva Entidad\n");
@@ -101,17 +102,17 @@ void Diccionariodedatos::menuEntidades(int op){
         printf("6.-Menu de Datos\n");
         printf("7.-Regresar\n");
 
-        op = leerEntero();
+        *op = leerEntero();
 
-        switch(op){
+        switch(*op){
             case 1: creaEntidad(); break;
             case 2: consultaEntidades(); break;
             case 3: eliminaEntidad(); break;
             case 4: modificaEntidad(); break;
-            case 5: menuAtributos(op); break;
+            case 5: menuAtributos(*op); break;
             case 6: menuDatos(op); break;
         }
-    }while(op != 7);
+    }while(*op != 7);
 }
 
 void Diccionariodedatos::menuAtributos(int op){
@@ -134,7 +135,7 @@ void Diccionariodedatos::menuAtributos(int op){
     }while(op != 5);
 }
 
-void Diccionariodedatos::menuDatos(int op){
+void Diccionariodedatos::menuDatos(int *op){
     do{
         printf("\n-----Menu de Datos-----\n");
         printf("1.-Nuevo Registro\n");
@@ -143,15 +144,15 @@ void Diccionariodedatos::menuDatos(int op){
         printf("4.-Modificar Registro\n");
         printf("5.-Regresar\n");
 
-        op = leerEntero();
+        *op = leerEntero();
 
-        switch(op){
+        switch(*op){
             case 1: creaRegistro(); break;
             case 2: consultaRegistro(); break;
             case 3: eliminaRegistro(); break;
             case 4: modificaRegistro(); break;
         }
-    }while(op != 5);
+    }while(*op != 5);
 }
 
 void Diccionariodedatos::creaEntidad()

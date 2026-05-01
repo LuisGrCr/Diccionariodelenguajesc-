@@ -1,4 +1,5 @@
 #include "Diccionariodedatos.h"
+
 int main()
 {
 	Diccionariodedatos *DB;

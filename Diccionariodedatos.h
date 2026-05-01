@@ -36,10 +36,10 @@ class Diccionariodedatos
     int leerEntero();
 
     //Menus
-    void menuPrincipal(int op);
-    void menuEntidades(int op);
+    void menuPrincipal(int *op);
+    void menuEntidades(int *op);
     void menuAtributos(int op);
-    void menuDatos(int op);
+    void menuDatos(int *op);
 
     // ENTIDADES
     void creaEntidad();
