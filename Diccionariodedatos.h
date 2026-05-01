@@ -43,7 +43,7 @@ class Diccionariodedatos
     void creaEntidad();
     void consultaEntidades();
     void eliminaEntidad();
-    void modificaEntidadM();
+    void modificaEntidad();
     long getCabEntidades();
     void escribeCabEntidades(long cab);
     ENTIDAD capturaEntidad();
@@ -53,6 +53,22 @@ class Diccionariodedatos
     void reescribeEntidad(ENTIDAD nuevo,long dir);
     void insertarEntidad(ENTIDAD nuevo,long dir);
     long eliminaEntidad (cadena nom);
+
+    void creaEntidad();
+    void consultaEntidades();
+    void eliminaEntidad();
+    void modificaEntidad();
+
+    void creaAtributo();
+    void consultaAtributos();
+    void eliminaAtributos();
+    void modificaAtributo();
+
+    void creaRegistro();
+    void consultaRegistro();
+    void eliminaRegistro();
+    void modificaRegistro();
+
 };
 
 
