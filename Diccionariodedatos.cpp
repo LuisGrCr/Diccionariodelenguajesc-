@@ -8,7 +8,7 @@ Diccionariodedatos::Diccionariodedatos(){
     menuPrincipal(op);
 }
 //lee entero
-int leerEntero(){
+int Diccionariodedatos::leerEntero(){
     int num;
     char buffer[MAX];
 
@@ -40,6 +40,54 @@ void Diccionariodedatos::menuPrincipal(int op){
                 break;
         }
     }while(op != 3);
+}
+
+int Diccionariodedatos::nuevoDiccionario()
+{
+    char nombre[50];
+    printf("\nNombre del nuevo diccionario: ");
+    scanf("%s", nombre);
+
+    //Verificamos que no exista abriendolo en modo lectura
+    archivo = fopen(nombre, "rb");
+    if(archivo)
+    {
+        printf("\nEl archivo ya existe\n");
+        fclose(archivo);
+        return 0;
+    }else{
+
+        printf("\nEl archivo NO existe, creando...");
+        archivo = fopen(nombre, "wb+");
+        if(!archivo)
+        {
+            printf("\nError al crear el archivo");
+            return 0;
+        }
+        printf("\nArchivo %s creado correctamente\n", nombre);
+        escribeCabEntidades(-1);
+        fclose(archivo);
+        return 1;
+    }
+}
+
+int Diccionariodedatos::abrirDiccionario(){
+
+    char nombre[MAX];
+
+    printf("\nNombre del archivo: ");
+    scanf("%98[^\n]", nombre);
+    getchar();
+
+    archivo = fopen(nombre, "rb+");
+
+    if(archivo == NULL){
+        printf("\nNo se pudo abrir el archivo\n");
+        return 0;
+    }
+
+    printf("\nArchivo abierto correctamente\n");
+    return 1;
 }
 
 void Diccionariodedatos::menuEntidades(int op){
@@ -106,14 +154,27 @@ void Diccionariodedatos::menuDatos(int op){
     }while(op != 5);
 }
 
-void Diccionariodedatos::creaEntidad(){ 
+void Diccionariodedatos::creaEntidad()
+{ 
     printf("\nTrabajando...\n");
  }
-void Diccionariodedatos::consultaEntidades(){ printf("\nTrabajando...\n"); }
-void Diccionariodedatos::eliminaEntidad(){ printf("\nTrabajando...\n"); }
-void Diccionariodedatos::modificaEntidad(){ printf("\nTrabajando...\n"); }
+void Diccionariodedatos::consultaEntidades()
+{ 
+    printf("\nTrabajando...\n"); 
+}
+void Diccionariodedatos::eliminaEntidad()
+{ 
+    printf("\nTrabajando...\n"); 
+}
+void Diccionariodedatos::modificaEntidad()
+{ 
+    printf("\nTrabajando...\n"); 
+}
 
-void Diccionariodedatos::creaAtributo(){ printf("\nTrabajando...\n"); }
+void Diccionariodedatos::creaAtributo()
+{ 
+    printf("\nTrabajando...\n"); 
+}
 void Diccionariodedatos::consultaAtributos(){ printf("\nTrabajando...\n"); }
 void Diccionariodedatos::eliminaAtributos(){ printf("\nTrabajando...\n"); }
 void Diccionariodedatos::modificaAtributo(){ printf("\nTrabajando...\n"); }
@@ -123,49 +184,6 @@ void Diccionariodedatos::consultaRegistro(){ printf("\nTrabajando...\n"); }
 void Diccionariodedatos::eliminaRegistro(){ printf("\nTrabajando...\n"); }
 void Diccionariodedatos::modificaRegistro(){ printf("\nTrabajando...\n"); }
 
-void Diccionariodedatos::nuevoDiccionario()
-{
-    char nombre[50];
-    printf("\nNombre del nuevo diccionario: ");
-    scanf("%s", nombre);
-
-    //Verificamos que no exista abriendolo en modo lectura
-    archivo = fopen(nombre, "rb");
-    if(archivo)
-    {
-        printf("\nEl archivo ya existe\n");
-        fclose(archivo);
-    }else{
-
-        printf("\nEl archivo NO existe, creando...");
-        archivo = fopen(nombre, "wb+");
-        if(!archivo)
-        {
-            printf("\nError al crear el archivo");
-            return;
-        }
-        printf("\nArchivo %s creado correctamente\n", nombre);
-        escribeCabEntidades(-1);
-        fclose(archivo);
-    }
-}
-int Diccionariodedatos::abrirDiccionario(){
-    char nombre[MAX];
-
-    printf("\nNombre del archivo: ");
-    scanf("%98[^\n]", nombre);
-    getchar();
-
-    archivo = fopen(nombre, "rb+");
-
-    if(archivo == NULL){
-        printf("\nNo se pudo abrir el archivo\n");
-        return 0;
-    }
-
-    printf("\nArchivo abierto correctamente\n");
-    return 1;
-}
 
 void Diccionariodedatos::insertarEntidad(ENTIDAD nuevo, long dir){
     printf("\n----------Trabajando----------\n");

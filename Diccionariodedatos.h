@@ -33,6 +33,8 @@ class Diccionariodedatos
     int nuevoDiccionario();
     int abrirDiccionario();
 
+    int leerEntero();
+
     //Menus
     void menuPrincipal(int op);
     void menuEntidades(int op);
@@ -53,11 +55,6 @@ class Diccionariodedatos
     void reescribeEntidad(ENTIDAD nuevo,long dir);
     void insertarEntidad(ENTIDAD nuevo,long dir);
     long eliminaEntidad (cadena nom);
-
-    void creaEntidad();
-    void consultaEntidades();
-    void eliminaEntidad();
-    void modificaEntidad();
 
     void creaAtributo();
     void consultaAtributos();
