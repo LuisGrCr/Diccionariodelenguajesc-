@@ -155,10 +155,16 @@ void Diccionariodedatos::menuDatos(int *op){
     }while(*op != 5);
 }
 
+
 void Diccionariodedatos::creaEntidad()
 { 
     printf("\nTrabajando...\n");
  }
+void Diccionariodedatos::escribeCabEntidades(long cab)
+{ 
+    fseek(archivo, 0, SEEK_SET);
+    fwrite(&cab, sizeof(long), 1, archivo);
+}
 void Diccionariodedatos::consultaEntidades()
 { 
     printf("\nTrabajando...\n"); 
@@ -170,6 +176,93 @@ void Diccionariodedatos::eliminaEntidad()
 void Diccionariodedatos::modificaEntidad()
 { 
     printf("\nTrabajando...\n"); 
+}
+long Diccionariodedatos::getCabEntidades(){
+    long dir;
+    fseek(archivo, 0, SEEK_SET);
+    fread(&dir, sizeof(long), 1, archivo);
+    return dir;
+}
+ENTIDAD Diccionariodedatos::capturaEntidad(){
+    ENTIDAD ent;
+    printf("\nNombre de la entidad: ");
+    scanf("%[^\n]", ent.nombre);
+
+    ent.atr = -1;
+    ent.sig = -1;
+    ent.data= -1;
+    return ent;
+}
+void Diccionariodedatos::altaEntidad(){
+    ENTIDAD nueva;
+    long dir;
+    nueva = capturaEntidad();
+
+if(buscaEntidad(nueva) == -1){
+    dir =escribeEntidad(nueva);
+    insertaEntidad(nueva, dir);;
+    }else{
+        printf("\nLa entidad ya existe\n");
+    }
+}
+long Diccionariodedatos::buscaEntidad(ENTIDAD ent){
+    long cab = getCabEntidades();
+    ENTIDAD actual;
+    while(cab != -1){
+        actual = leeEntidad(cab);
+        if(strcmp(ent.nombre, actual.nombre) == 0){
+            return cab;
+        }
+        cab = actual.sig;
+    }
+    return -1;
+}
+long Diccionariodedatos::escribeEntidad(ENTIDAD ent){
+    long dir;
+    fseek(archivo, 0, SEEK_END);
+    dir = ftell(archivo);
+    fwrite(&ent, sizeof(ENTIDAD), 1, archivo);
+    return dir;
+}
+ENTIDAD Diccionariodedatos::leeEntidad(long dir){
+    ENTIDAD nuevo;
+    fseek(archivo, dir, SEEK_SET);
+    fread(&nuevo, sizeof(ENTIDAD), 1, archivo);
+    return nuevo;
+}
+void Diccionariodedatos::reescribeEntidad(ENTIDAD ent, long dir){
+    fseek(archivo, dir, SEEK_SET);
+    fwrite(&ent, sizeof(ENTIDAD), 1, archivo);
+}
+void Diccionariodedatos::insertarEntidad(ENTIDAD nuevo, long dir){
+    ENTIDAD actual, anterior;
+    long cab = getCabEntidades();
+    long dirAnterior = -1;
+
+    if(cab == -1){
+        cab = dir;
+        escribeCabEntidades(cab);
+        return;
+    }else{
+        actual = leeEntidad(cab);
+        if(strcmp(actual.nombre, nuevo.nombre) > 0){
+            nuevo.sig = cab;
+            reescribeEntidad(nuevo, dir);
+            escribeCabEntidades(dir);
+        }else{
+            while (cab != -1 && strcmp(actual.nombre, nuevo.nombre) > 0){
+                dirAnterior = cab;
+                anterior = actual;
+                cab = actual.sig;
+                if(cab != -1)
+                    actual = leeEntidad(cab);
+            }
+            nuevo.sig = cab;
+            reescribeEntidad(nuevo, dir);
+            anterior.sig = dir;
+            reescribeEntidad(anterior, dirAnterior);
+        }
+    }
 }
 
 void Diccionariodedatos::creaAtributo()
@@ -189,8 +282,6 @@ void Diccionariodedatos::modificaRegistro(){ printf("\nTrabajando...\n"); }
 void Diccionariodedatos::insertarEntidad(ENTIDAD nuevo, long dir){
     printf("\n----------Trabajando----------\n");
 }
-void Diccionariodedatos::escribeCabEntidades(long cab){}
 void Diccionariodedatos::reescribeEntidad(ENTIDAD ent, long dir){}
 ENTIDAD Diccionariodedatos::leeEntidad(long dir){ return activa; }
-long Diccionariodedatos::getCabEntidades(){ return -1; }
-ENTIDAD Diccionariodedatos::capturaEntidad(){ return activa; }
+

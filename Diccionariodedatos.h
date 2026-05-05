@@ -11,11 +11,21 @@ typedef char cadena[100];
 // ESTRUCTURA
 typedef struct
 {
-    long ant;
+    long atr;
     long sig;
     long data;
     cadena nombre;
 }ENTIDAD;
+
+typedef struct 
+{
+    char tipo;
+    int tam;
+    long sig;
+    int clave;
+    cadena descripcion;
+}ATRIBUTO;
+
 
 class Diccionariodedatos
 {
@@ -55,7 +65,8 @@ class Diccionariodedatos
     void reescribeEntidad(ENTIDAD nuevo,long dir);
     void insertarEntidad(ENTIDAD nuevo,long dir);
     long eliminaEntidad (cadena nom);
-
+    
+    //Funciones atributos
     void creaAtributo();
     void consultaAtributos();
     void eliminaAtributos();
