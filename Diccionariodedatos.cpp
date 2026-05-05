@@ -1,5 +1,5 @@
 #include "Diccionariodedatos.h"
-
+//MANUEL MARTINEZ GRIMALDO
 Diccionariodedatos::Diccionariodedatos(){
     NumAtributos = 0;
     tamBloque = 0;
