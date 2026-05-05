@@ -1,5 +1,6 @@
 #include "Diccionariodedatos.h"
 //MANUEL MARTINEZ GRIMALDO
+//Granja Carranco Luis Adrian
 Diccionariodedatos::Diccionariodedatos(){
     NumAtributos = 0;
     tamBloque = 0;
