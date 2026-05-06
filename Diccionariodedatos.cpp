@@ -38,6 +38,7 @@ void Diccionariodedatos::menuPrincipal(int *op){
             case 1:
                 if(nuevoDiccionario()){
                     menuEntidades(op);
+                    //cierra archivo al salir del menu
                     fclose(archivo);
                     archivo = NULL;
                 } 
@@ -45,6 +46,7 @@ void Diccionariodedatos::menuPrincipal(int *op){
             case 2:
                 if(abrirDiccionario()){
                     menuEntidades(op);
+                    //cierra archivo al salir del menu
                     fclose(archivo);
                     archivo = NULL;
                 }
@@ -162,7 +164,7 @@ void Diccionariodedatos::menuDatos(int *op){
     }while(*op != 5);
 }
 
-
+//------------------Funciones de Entidades------------------
 void Diccionariodedatos::altaEntidad(){
     ENTIDAD nueva;
     long dir;
