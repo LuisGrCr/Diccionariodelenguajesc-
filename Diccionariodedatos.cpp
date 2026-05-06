@@ -36,10 +36,18 @@ void Diccionariodedatos::menuPrincipal(int *op){
 
         switch(*op){
             case 1:
-                if(nuevoDiccionario()) menuEntidades(op);
+                if(nuevoDiccionario()){
+                    menuEntidades(op);
+                    fclose(archivo);
+                    archivo = NULL;
+                } 
                 break;
             case 2:
-                if(abrirDiccionario()) menuEntidades(op);
+                if(abrirDiccionario()){
+                    menuEntidades(op);
+                    fclose(archivo);
+                    archivo = NULL;
+                }
                 break;
         }
     }while(*op != 3);
@@ -309,6 +317,7 @@ long Diccionariodedatos::buscaEntidad(ENTIDAD ent){
         cab = actual.sig;
     }
     return -1;
+    printf("DEBUG: cab = %ld\n", cab);
 }
 long Diccionariodedatos::escribeEntidad(ENTIDAD ent){
     long dir;
@@ -333,15 +342,17 @@ void Diccionariodedatos::insertarEntidad(ENTIDAD nuevo, long dir){
     long dirActual = cab;
     long dirAnterior = -1;
 
-    //Caso 1: lista vacía
+    // 🔹 Caso 1: lista vacía
     if(cab == -1){
+        nuevo.sig = -1;
+        reescribeEntidad(nuevo, dir);
         escribeCabEntidades(dir);
         return;
     }
 
     actual = leeEntidad(dirActual);
 
-    //Caso 2: insertar al inicio
+    // 🔹 Caso 2: insertar al inicio
     if(strcmp(nuevo.nombre, actual.nombre) < 0){
         nuevo.sig = dirActual;
         reescribeEntidad(nuevo, dir);
@@ -349,7 +360,7 @@ void Diccionariodedatos::insertarEntidad(ENTIDAD nuevo, long dir){
         return;
     }
 
-    // Caso 3: buscar posición correcta
+    // 🔹 Caso 3: buscar posición
     while(dirActual != -1 && strcmp(actual.nombre, nuevo.nombre) < 0){
         dirAnterior = dirActual;
         anterior = actual;
@@ -360,7 +371,7 @@ void Diccionariodedatos::insertarEntidad(ENTIDAD nuevo, long dir){
         }
     }
 
-    //Insertar entre anterior y actual
+    // 🔹 Insertar
     nuevo.sig = dirActual;
     reescribeEntidad(nuevo, dir);
 
