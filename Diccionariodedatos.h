@@ -52,9 +52,10 @@ class Diccionariodedatos
     void menuDatos(int *op);
 
     // ENTIDADES
-    void creaEntidad();
+    void altaEntidad();
     void consultaEntidades();
     void eliminaEntidad();
+    long eliminaEntidad(char nombre[MAX]);
     void modificaEntidad();
     long getCabEntidades();
     void escribeCabEntidades(long cab);
@@ -64,7 +65,7 @@ class Diccionariodedatos
     long escribeEntidad(ENTIDAD ent);
     void reescribeEntidad(ENTIDAD nuevo,long dir);
     void insertarEntidad(ENTIDAD nuevo,long dir);
-    long eliminaEntidad (cadena nom);
+    
     
     //Funciones atributos
     void creaAtributo();
