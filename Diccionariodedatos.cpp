@@ -188,8 +188,6 @@ ENTIDAD Diccionariodedatos::capturaEntidad(){
     printf("\nNombre de la entidad: ");
     scanf(" %[^\n]", ent.nombre);
 
-    getchar();
-
     ent.atr = -1;
     ent.sig = -1;
     ent.data= -1;
@@ -207,7 +205,7 @@ void Diccionariodedatos::consultaEntidades()
     while (cab != -1)
     {
         nuevo = leeEntidad(cab);
-        printf("%s,-> %ld, -> %ld,-> %ld\n", nuevo.nombre, nuevo.atr, nuevo.sig, nuevo.data);
+        printf("%s| dir.atr -> %ld| dir.sig -> %ld| dir.dat -> %ld\n", nuevo.nombre, nuevo.atr, nuevo.sig, nuevo.data);
         cab = nuevo.sig;
     }
     
@@ -389,6 +387,7 @@ void Diccionariodedatos::insertarEntidad(ENTIDAD nuevo, long dir){
     reescribeEntidad(anterior, dirAnterior);
 }
 
+//---------------Funciones de Atributos----------------
 //Captura los datos de un atributo
 void Diccionariodedatos::creaAtributo()
 {
@@ -457,8 +456,6 @@ void Diccionariodedatos::pideEntidad()
     printf("\nNombre entidad: ");
     scanf(" %[^\n]",aux.nombre);
 
-    getchar();
-
     dirActiva = buscaEntidad(aux);
 
     if(dirActiva == -1)
@@ -471,66 +468,25 @@ ATRIBUTO Diccionariodedatos::capturaAtributo()
 {
     ATRIBUTO atr;
 
-    int op;
-
     printf("\nNombre atributo: ");
     scanf(" %[^\n]",atr.nombre);
 
-    getchar();
-
-    printf("\nTipo de atributo\n");
-    printf("1.- Char\n");
-    printf("2.- Entero\n");
-    printf("3.- Float\n");
-    printf("4.- Double\n");
-    printf("5.- Long\n");
-
-    op = leerEntero();
-
-    switch(op)
-    {
-        case 1:
-            atr.tipo = 'c';
-            break;
-
-        case 2:
-            atr.tipo = 'i';
-            break;
-
-        case 3:
-            atr.tipo = 'f';
-            break;
-
-        case 4:
-            atr.tipo = 'd';
-            break;
-
-        case 5:
-            atr.tipo = 'l';
-            break;
-
-        default:
-            printf("\nTipo invalido");
-
-            atr.tipo = 'c';
-    }
+    printf("Tipo: ");
+    scanf(" %c",&atr.tipo);
 
     printf("Tamano: ");
-    atr.tam = leerEntero();
+    scanf("%d",&atr.tam);
 
     printf("Clave: ");
-    atr.clave = leerEntero();
+    scanf("%d",&atr.clave);
 
     printf("Descripcion: ");
     scanf(" %[^\n]",atr.descripcion);
 
-    getchar();
-    
     atr.sig = -1;
 
     return atr;
 }
-
 //Busca un atributo por nombre en la entidad activa
 long Diccionariodedatos::buscaAtributo(char *atr)
 {
@@ -731,8 +687,6 @@ void Diccionariodedatos::modificaAtributo()
     {
         printf("\nIngrese atributo a modificar: ");
         scanf(" %[^\n]",nombre);
-
-        getchar();
 
         if(buscaAtributo(nombre) != -1)
         {
