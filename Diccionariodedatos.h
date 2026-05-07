@@ -19,6 +19,7 @@ typedef struct
 
 typedef struct 
 {
+    cadena nombre;
     char tipo;
     int tam;
     long sig;
@@ -72,7 +73,16 @@ class Diccionariodedatos
     void consultaAtributos();
     void eliminaAtributos();
     void modificaAtributo();
+    void pideEntidad();
+    ATRIBUTO capturaAtributo();
+    long buscaAtributo(char *atr);
+    long escribeAtributo(ATRIBUTO atr);
+    ATRIBUTO leeAtributo(long dir);
+    void reescribeAtributo(ATRIBUTO atr,long dir);
+    void insertarAtributo(ATRIBUTO nuevo,long dir);
+    long eliminaAtributo(char nombre[MAX]);
 
+    
     void creaRegistro();
     void consultaRegistro();
     void eliminaRegistro();

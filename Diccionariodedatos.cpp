@@ -9,19 +9,13 @@ Diccionariodedatos::Diccionariodedatos(){
     menuPrincipal(&op);
 }
 //lee entero
-
-int Diccionariodedatos::leerEntero(){
+int Diccionariodedatos::leerEntero()
+{
     int num;
-    char buffer[MAX];
 
-    while(1){
-        if(fgets(buffer, sizeof(buffer), stdin)){
-            if(sscanf(buffer, "%d", &num) == 1){
-                return num;
-            }
-        }
-        printf("Entrada invalida, ingresa un numero:\n");
-    }
+    scanf("%d",&num);
+
+    return num;
 }
 
 
@@ -61,6 +55,7 @@ int Diccionariodedatos::nuevoDiccionario()
     char nombre[50];
     printf("\nNombre del nuevo diccionario: ");
     scanf("%s", nombre);
+    getchar();
 
     archivo = fopen(nombre, "rb");
     if(archivo)
@@ -79,6 +74,7 @@ int Diccionariodedatos::nuevoDiccionario()
     escribeCabEntidades(-1);
     return 1;
 }
+
 int Diccionariodedatos::abrirDiccionario(){
 
     char nombre[MAX];
@@ -164,7 +160,7 @@ void Diccionariodedatos::menuDatos(int *op){
     }while(*op != 5);
 }
 
-//------------------Funciones de Entidades------------------
+//--Funciones de Entidades--
 void Diccionariodedatos::altaEntidad(){
     ENTIDAD nueva;
     long dir;
@@ -208,7 +204,7 @@ long Diccionariodedatos::eliminaEntidad(char nombre[MAX])
 {
     long cab = getCabEntidades();
 
-    // 🔹 Caso 1: lista vacía
+    //  Caso 1: lista vacía
     if(cab == -1){
         return -1;
     }
@@ -344,7 +340,7 @@ void Diccionariodedatos::insertarEntidad(ENTIDAD nuevo, long dir){
     long dirActual = cab;
     long dirAnterior = -1;
 
-    // 🔹 Caso 1: lista vacía
+    // Caso 1: lista vacía
     if(cab == -1){
         nuevo.sig = -1;
         reescribeEntidad(nuevo, dir);
@@ -354,7 +350,7 @@ void Diccionariodedatos::insertarEntidad(ENTIDAD nuevo, long dir){
 
     actual = leeEntidad(dirActual);
 
-    // 🔹 Caso 2: insertar al inicio
+    // Caso 2: insertar al inicio
     if(strcmp(nuevo.nombre, actual.nombre) < 0){
         nuevo.sig = dirActual;
         reescribeEntidad(nuevo, dir);
@@ -362,7 +358,7 @@ void Diccionariodedatos::insertarEntidad(ENTIDAD nuevo, long dir){
         return;
     }
 
-    // 🔹 Caso 3: buscar posición
+    //  Caso 3: buscar posición
     while(dirActual != -1 && strcmp(actual.nombre, nuevo.nombre) < 0){
         dirAnterior = dirActual;
         anterior = actual;
@@ -373,7 +369,7 @@ void Diccionariodedatos::insertarEntidad(ENTIDAD nuevo, long dir){
         }
     }
 
-    // 🔹 Insertar
+    // Insertar
     nuevo.sig = dirActual;
     reescribeEntidad(nuevo, dir);
 
@@ -381,17 +377,337 @@ void Diccionariodedatos::insertarEntidad(ENTIDAD nuevo, long dir){
     reescribeEntidad(anterior, dirAnterior);
 }
 
-
+//Captura los datos de un atributo
 void Diccionariodedatos::creaAtributo()
-{ 
-    printf("\nTrabajando...\n"); 
+{
+    ATRIBUTO nuevo;
+
+    long dir;
+
+    pideEntidad();
+
+    if(dirActiva != -1)
+    {
+        nuevo = capturaAtributo();
+
+        if(buscaAtributo(nuevo.nombre) == -1)
+        {
+            dir = escribeAtributo(nuevo);
+
+            insertarAtributo(nuevo,dir);
+
+            printf("\nAtributo insertado\n");
+        }
+        else
+            printf("\nEl atributo ya existe");
+    }
 }
+//Busca un atributo en la entidad activa
 void Diccionariodedatos::consultaAtributos()
-{ printf("\nTrabajando...\n"); }
+{
+    ATRIBUTO nuevo;
+
+    long cab;
+
+    pideEntidad();
+
+    if(dirActiva != -1)
+    {
+        cab = activa.atr;
+
+        if(cab == -1)
+        {
+            printf("\nNo hay atributos\n");
+            return;
+        }
+
+        while(cab != -1)
+        {
+            nuevo = leeAtributo(cab);
+
+            printf("\n%s %c %d %ld %d %s",
+                   nuevo.nombre,
+                   nuevo.tipo,
+                   nuevo.tam,
+                   nuevo.sig,
+                   nuevo.clave,
+                   nuevo.descripcion);
+
+            cab = nuevo.sig;
+        }
+    }
+}
+//Pide una entidad y la deja activa para trabajar con sus atributos
+void Diccionariodedatos::pideEntidad()
+{
+    ENTIDAD aux;
+
+    printf("\nNombre entidad: ");
+    scanf(" %[^\n]",aux.nombre);
+
+    dirActiva = buscaEntidad(aux);
+
+    if(dirActiva == -1)
+        printf("\nNo existe entidad");
+    else
+        activa = leeEntidad(dirActiva);
+}
+//Captura los datos de un atributo
+ATRIBUTO Diccionariodedatos::capturaAtributo()
+{
+    ATRIBUTO atr;
+
+    printf("\nNombre atributo: ");
+    scanf(" %[^\n]",atr.nombre);
+
+    printf("Tipo: ");
+    scanf(" %c",&atr.tipo);
+
+    printf("Tamano: ");
+    scanf("%d",&atr.tam);
+
+    printf("Clave: ");
+    scanf("%d",&atr.clave);
+
+    printf("Descripcion: ");
+    scanf(" %[^\n]",atr.descripcion);
+
+    atr.sig = -1;
+
+    return atr;
+}
+//Busca un atributo por nombre en la entidad activa
+long Diccionariodedatos::buscaAtributo(char *atr)
+{
+    long cab = activa.atr;
+
+    ATRIBUTO actual;
+
+    while(cab != -1)
+    {
+        actual = leeAtributo(cab);
+
+        if(strcmp(actual.nombre,atr) == 0)
+            return cab;
+
+        cab = actual.sig;
+    }
+
+    return -1;
+}
+//Escribe un atributo al final del archivo
+long Diccionariodedatos::escribeAtributo(ATRIBUTO atr)
+{
+    long dir;
+
+    fseek(archivo,0,SEEK_END);
+
+    dir = ftell(archivo);
+
+    fwrite(&atr,sizeof(ATRIBUTO),1,archivo);
+
+    return dir;
+}
+//Lee un atributo desde una direccion especifica
+ATRIBUTO Diccionariodedatos::leeAtributo(long dir)
+{
+    ATRIBUTO nvo;
+
+    fseek(archivo,dir,SEEK_SET);
+
+    fread(&nvo,sizeof(ATRIBUTO),1,archivo);
+
+    return nvo;
+}
+//Actualiza la informacion de un atributo en el archivo
+void Diccionariodedatos::reescribeAtributo(ATRIBUTO atr,long dir)
+{
+    fseek(archivo,dir,SEEK_SET);
+
+    fwrite(&atr,sizeof(ATRIBUTO),1,archivo);
+}
+//Inserta un atributo en orden alfabetico
+void Diccionariodedatos::insertarAtributo(ATRIBUTO nuevo,long dir)
+{
+    long cab = activa.atr;
+
+    long dirant;
+
+    ATRIBUTO actual, atrant;
+
+    if(activa.atr == -1)
+    {
+        activa.atr = dir;
+
+        reescribeEntidad(activa,dirActiva);
+    }
+    else
+    {
+        actual = leeAtributo(cab);
+
+        if(strcmp(actual.nombre,nuevo.nombre) > 0)
+        {
+            nuevo.sig = cab;
+
+            reescribeAtributo(nuevo,dir);
+
+            activa.atr = dir;
+
+            reescribeEntidad(activa,dirActiva);
+        }
+        else
+        {
+            while(cab != -1 &&
+                  strcmp(nuevo.nombre,actual.nombre) > 0)
+            {
+                atrant = actual;
+
+                dirant = cab;
+
+                cab = actual.sig;
+
+                if(cab != -1)
+                    actual = leeAtributo(cab);
+            }
+
+            nuevo.sig = cab;
+
+            reescribeAtributo(nuevo,dir);
+
+            atrant.sig = dir;
+
+            reescribeAtributo(atrant,dirant);
+        }
+    }
+}
+//Da de baja un atributo
 void Diccionariodedatos::eliminaAtributos()
-{ printf("\nTrabajando...\n"); }
+{
+    char nombre[MAX];
+
+    long dir;
+
+    pideEntidad();
+
+    if(dirActiva != -1)
+    {
+        printf("\nIngrese el nombre del atributo a eliminar: ");
+        scanf(" %[^\n]",nombre);
+
+        dir = buscaAtributo(nombre);
+
+        if(dir == -1)
+        {
+            printf("\nError: el atributo no existe");
+        }
+        else
+        {
+            eliminaAtributo(nombre);
+
+            printf("\nAtributo eliminado");
+        }
+    }
+}
+
+//Elimina un atributo de la lista enlazada
+long Diccionariodedatos::eliminaAtributo(char nombre[MAX])
+{
+    long cab = activa.atr;
+
+    long dirant = -1;
+
+    ATRIBUTO actual, ant;
+
+    if(cab == -1)
+        return -1;
+
+    actual = leeAtributo(cab);
+
+    //Caso 1: eliminar el primero
+    if(strcmp(actual.nombre,nombre) == 0)
+    {
+        activa.atr = actual.sig;
+
+        reescribeEntidad(activa,dirActiva);
+
+        return cab;
+    }
+    else
+    {
+        while(cab != -1 &&
+              strcmp(actual.nombre,nombre) != 0)
+        {
+            dirant = cab;
+
+            ant = actual;
+
+            cab = actual.sig;
+
+            if(cab != -1)
+                actual = leeAtributo(cab);
+        }
+
+        //Caso 2: encontrado
+        if(cab != -1)
+        {
+            ant.sig = actual.sig;
+
+            reescribeAtributo(ant,dirant);
+
+            return cab;
+        }
+    }
+
+    //Caso 3: no encontrado
+    return -1;
+}
+
 void Diccionariodedatos::modificaAtributo()
-{ printf("\nTrabajando...\n"); }
+{
+    char nombre[MAX];
+
+    ATRIBUTO nuevo;
+
+    long dir2, dir3;
+
+    pideEntidad();
+
+    if(dirActiva != -1)
+    {
+        printf("\nIngrese atributo a modificar: ");
+        scanf(" %[^\n]",nombre);
+
+        if(buscaAtributo(nombre) != -1)
+        {
+            printf("\nIngresa la nueva informacion:\n");
+
+            nuevo = capturaAtributo();
+
+            dir2 = buscaAtributo(nuevo.nombre);
+
+            if(strcmp(nuevo.nombre,nombre) == 0 ||
+               dir2 == -1)
+            {
+                dir3 = eliminaAtributo(nombre);
+
+                reescribeAtributo(nuevo,dir3);
+
+                insertarAtributo(nuevo,dir3);
+
+                printf("\nAtributo modificado");
+            }
+            else
+            {
+                printf("\nNo se puede modificar porque ya existe uno con ese nombre");
+            }
+        }
+        else
+        {
+            printf("\nNo existe el atributo");
+        }
+    }
+}
+
 
 void Diccionariodedatos::creaRegistro()
 { printf("\nTrabajando...\n"); }
