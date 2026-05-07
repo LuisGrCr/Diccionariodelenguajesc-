@@ -12,10 +12,20 @@ Diccionariodedatos::Diccionariodedatos(){
 int Diccionariodedatos::leerEntero()
 {
     int num;
+    char buffer[MAX];
 
-    scanf("%d",&num);
+    while(1)
+    {
+        fgets(buffer, sizeof(buffer), stdin);
 
-    return num;
+        // Validar que sea entero
+        if(sscanf(buffer, "%d", &num) == 1)
+        {
+            return num;
+        }
+
+        printf("Entrada invalida. Ingresa un numero: ");
+    }
 }
 
 
@@ -80,7 +90,7 @@ int Diccionariodedatos::abrirDiccionario(){
     char nombre[MAX];
 
     printf("\nNombre del archivo: ");
-    scanf("%98[^\n]", nombre);
+    scanf(" %[^\n]", nombre);
     getchar();
 
     archivo = fopen(nombre, "rb+");
