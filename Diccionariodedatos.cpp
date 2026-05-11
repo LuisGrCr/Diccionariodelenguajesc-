@@ -177,6 +177,8 @@ void Diccionariodedatos::menuDatos(int *op){
 }
 
 //--Funciones de Entidades--
+
+//Da de alta una nueva entidad
 void Diccionariodedatos::altaEntidad(){
     ENTIDAD nueva;
     long dir;
@@ -189,6 +191,7 @@ if(buscaEntidad(nueva) == -1){
         printf("\nLa entidad ya existe\n");
     }
 }
+//Captura los datos de una entidad
 ENTIDAD Diccionariodedatos::capturaEntidad(){
     ENTIDAD ent;
     printf("\nNombre de la entidad: ");
@@ -199,11 +202,13 @@ ENTIDAD Diccionariodedatos::capturaEntidad(){
     ent.data= -1;
     return ent;
 }
+//Escribe la direccion de la cabecera de entidades al inicio del archivo
 void Diccionariodedatos::escribeCabEntidades(long cab)
 { 
     fseek(archivo, 0, SEEK_SET);
     fwrite(&cab, sizeof(long), 1, archivo);
 }
+//Consulta todas las entidades
 void Diccionariodedatos::consultaEntidades()
 { 
     ENTIDAD nuevo;
@@ -216,6 +221,7 @@ void Diccionariodedatos::consultaEntidades()
     }
     
 }
+//Elimina una entidad por nombre
 long Diccionariodedatos::eliminaEntidad(char nombre[MAX])
 {
     long cab = getCabEntidades();
@@ -257,6 +263,7 @@ long Diccionariodedatos::eliminaEntidad(char nombre[MAX])
     //Caso 4: no encontrado
     return -1;
 }
+//Elimina una entidad por nombre (interfaz de usuario)
 void Diccionariodedatos::eliminaEntidad(){
     char nombre[MAX];
 
@@ -271,6 +278,7 @@ void Diccionariodedatos::eliminaEntidad(){
         printf("\nEntidad eliminada correctamente\n");
     }
 }
+//Modifica una entidad por nombre
 void Diccionariodedatos::modificaEntidad()
 { 
     char nombre[MAX];
@@ -278,7 +286,7 @@ void Diccionariodedatos::modificaEntidad()
     ENTIDAD nueva, original;
 
     printf("\nNombre de la entidad a modificar: ");
-    scanf(" %[^\n]", nombre);
+    leerCadena(nombre);
 
     //Crear entidad auxiliar para buscar
     strcpy(original.nombre, nombre);
@@ -314,12 +322,14 @@ void Diccionariodedatos::modificaEntidad()
 
     printf("\nEntidad modificada correctamente\n");
 }
+//Obtiene la direccion de la cabecera de entidades
 long Diccionariodedatos::getCabEntidades(){
     long dir;
     fseek(archivo, 0, SEEK_SET);
     fread(&dir, sizeof(long), 1, archivo);
     return dir;
 }
+//Busca una entidad por nombre y devuelve su direccion
 long Diccionariodedatos::buscaEntidad(ENTIDAD ent){
     long cab = getCabEntidades();
     ENTIDAD actual;
@@ -333,6 +343,7 @@ long Diccionariodedatos::buscaEntidad(ENTIDAD ent){
     return -1;
     printf("DEBUG: cab = %ld\n", cab);
 }
+//Escribe una entidad al final del archivo y devuelve su direccion
 long Diccionariodedatos::escribeEntidad(ENTIDAD ent){
     long dir;
     fseek(archivo, 0, SEEK_END);
@@ -340,16 +351,19 @@ long Diccionariodedatos::escribeEntidad(ENTIDAD ent){
     fwrite(&ent, sizeof(ENTIDAD), 1, archivo);
     return dir;
 }
+//Lee una entidad desde una direccion especifica
 ENTIDAD Diccionariodedatos::leeEntidad(long dir){
     ENTIDAD nuevo;
     fseek(archivo, dir, SEEK_SET);
     fread(&nuevo, sizeof(ENTIDAD), 1, archivo);
     return nuevo;
 }
+//Actualiza la informacion de una entidad en el archivo
 void Diccionariodedatos::reescribeEntidad(ENTIDAD ent, long dir){
     fseek(archivo, dir, SEEK_SET);
     fwrite(&ent, sizeof(ENTIDAD), 1, archivo);
 }
+//Inserta una entidad en orden alfabetico
 void Diccionariodedatos::insertarEntidad(ENTIDAD nuevo, long dir){
     long cab = getCabEntidades();
     ENTIDAD actual, anterior;
