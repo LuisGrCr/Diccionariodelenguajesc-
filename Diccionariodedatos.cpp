@@ -132,11 +132,20 @@ void Diccionariodedatos::menuEntidades(int *op){
             case 2: consultaEntidades(); break;
             case 3: eliminaEntidad(); break;
             case 4: modificaEntidad(); break;
-            case 5: menuAtributos(*op); break;
+            case 5:
+             pideEntidad();
+
+            if(dirActiva != -1)
+            {
+              menuAtributos(*op);
+            }
+
+    break;
             case 6: menuDatos(op); break;
         }
     }while(*op != 7);
 }
+
 void Diccionariodedatos::menuAtributos(int op){
     do{
         printf("\n-----Menu de Atributos-----\n");
@@ -292,6 +301,7 @@ void Diccionariodedatos::modificaEntidad()
     strcpy(original.nombre, nombre);
 
     dir = buscaEntidad(original);
+    original = leeEntidad(dir);
 
     //Si no existe
     if(dir == -1){
@@ -301,6 +311,8 @@ void Diccionariodedatos::modificaEntidad()
 
     //Capturar nuevos datos
     nueva = capturaEntidad();
+    nueva.atr = original.atr;
+    nueva.data = original.data;
 
     //Verificar duplicado (si cambió el nombre)
     ENTIDAD aux;
@@ -415,24 +427,22 @@ void Diccionariodedatos::creaAtributo()
 
     long dir;
 
-    pideEntidad();
+    nuevo = capturaAtributo();
 
-    if(dirActiva != -1)
+    if(buscaAtributo(nuevo.nombre) == -1)
     {
-        nuevo = capturaAtributo();
+        dir = escribeAtributo(nuevo);
 
-        if(buscaAtributo(nuevo.nombre) == -1)
-        {
-            dir = escribeAtributo(nuevo);
+        insertarAtributo(nuevo,dir);
 
-            insertarAtributo(nuevo,dir);
-
-            printf("\nAtributo insertado\n");
-        }
-        else
-            printf("\nEl atributo ya existe");
+        printf("\nAtributo insertado\n");
+    }
+    else
+    {
+        printf("\nEl atributo ya existe");
     }
 }
+
 //Busca un atributo en la entidad activa
 void Diccionariodedatos::consultaAtributos()
 {
@@ -440,34 +450,34 @@ void Diccionariodedatos::consultaAtributos()
 
     long cab;
 
-    pideEntidad();
+    cab = activa.atr;
 
-    if(dirActiva != -1)
+    if(cab == -1)
     {
-        cab = activa.atr;
-
-        if(cab == -1)
-        {
-            printf("\nNo hay atributos\n");
-            return;
-        }
-
-        while(cab != -1)
-        {
-            nuevo = leeAtributo(cab);
-
-            printf("\n %s %c %d %ld %d %s",
-                   nuevo.nombre,
-                   nuevo.tipo,
-                   nuevo.tam,
-                   nuevo.sig,
-                   nuevo.clave,
-                   nuevo.descripcion);
-
-            cab = nuevo.sig;
-        }
+        printf("\nNo hay atributos\n");
+        return;
     }
+
+    printf("\nNOMBRE\tTIPO\tTAM\tCLAVE\tNULOS\tDESCRIPCION\n");
+
+    while(cab != -1)
+    {
+        nuevo = leeAtributo(cab);
+
+        printf("\n%s\t%d\t%d\t%d\t%d\t%s",
+               nuevo.nombre,
+               nuevo.tipo,
+               nuevo.tam,
+               nuevo.clave,
+               nuevo.nulos,
+               nuevo.descripcion);
+
+        cab = nuevo.sig;
+    }
+
+    printf("\n");
 }
+
 //Pide una entidad y la deja activa para trabajar con sus atributos
 void Diccionariodedatos::pideEntidad()
 {
@@ -491,14 +501,32 @@ ATRIBUTO Diccionariodedatos::capturaAtributo()
     printf("\nNombre atributo: ");
     leerCadena(atr.nombre);
 
-    printf("Tipo: ");
+    printf("\nTipos de dato:");
+    printf("\n1.-Entero");
+    printf("\n2.-Cadena");
+    printf("\n3.-Float");
+    printf("\n4.-Char");
+
+    printf("\nTipo: ");
     atr.tipo = leerEntero();
 
     printf("Tamano: ");
     atr.tam = leerEntero();
 
-    printf("Clave: ");
-    atr.clave = leerEntero();
+    printf("Es clave primaria? (S/N): ");
+    scanf(" %c",&atr.clave);
+    getchar();
+
+    if(atr.clave == 'S' || atr.clave == 's')
+    {
+        atr.nulos = 'N';
+    }
+    else
+    {
+        printf("Permite nulos? (S/N): ");
+        scanf(" %c",&atr.nulos);
+        getchar();
+    }
 
     printf("Descripcion: ");
     leerCadena(atr.descripcion);
@@ -507,6 +535,7 @@ ATRIBUTO Diccionariodedatos::capturaAtributo()
 
     return atr;
 }
+
 //Busca un atributo por nombre en la entidad activa
 long Diccionariodedatos::buscaAtributo(char *atr)
 {
@@ -618,10 +647,6 @@ void Diccionariodedatos::eliminaAtributos()
 
     long dir;
 
-    pideEntidad();
-
-    if(dirActiva != -1)
-    {
         printf("\nIngrese el nombre del atributo a eliminar: ");
         leerCadena(nombre);
 
@@ -637,7 +662,6 @@ void Diccionariodedatos::eliminaAtributos()
 
             printf("\nAtributo eliminado");
         }
-    }
 }
 
 //Elimina un atributo de la lista enlazada
@@ -701,10 +725,6 @@ void Diccionariodedatos::modificaAtributo()
 
     long dir2, dir3;
 
-    pideEntidad();
-
-    if(dirActiva != -1)
-    {
         printf("\nIngrese atributo a modificar: ");
         leerCadena(nombre);
 
@@ -736,7 +756,6 @@ void Diccionariodedatos::modificaAtributo()
         {
             printf("\nNo existe el atributo");
         }
-    }
 }
 
 

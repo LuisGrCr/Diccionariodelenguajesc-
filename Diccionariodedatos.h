@@ -20,13 +20,13 @@ typedef struct
 typedef struct 
 {
     cadena nombre;
-    char tipo;
+    int tipo;
     int tam;
     long sig;
     int clave;
+    int nulos;
     cadena descripcion;
 }ATRIBUTO;
-
 
 class Diccionariodedatos
 {
