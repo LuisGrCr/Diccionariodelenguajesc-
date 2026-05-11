@@ -27,7 +27,13 @@ int Diccionariodedatos::leerEntero()
         printf("Entrada invalida. Ingresa un numero: ");
     }
 }
-
+//funcion reutilizable para poder leer cadenas y evitar problemas al ingresar datos
+void Diccionariodedatos::leerCadena(char cadena[MAX])
+{
+    fgets(cadena, MAX, stdin);
+    // Eliminar el salto de línea al final
+    cadena[strcspn(cadena, "\n")] = '\0';
+}
 
 void Diccionariodedatos::menuPrincipal(int *op){
     do{
@@ -186,7 +192,7 @@ if(buscaEntidad(nueva) == -1){
 ENTIDAD Diccionariodedatos::capturaEntidad(){
     ENTIDAD ent;
     printf("\nNombre de la entidad: ");
-    scanf(" %[^\n]", ent.nombre);
+    leerCadena(ent.nombre);
 
     ent.atr = -1;
     ent.sig = -1;
@@ -255,7 +261,7 @@ void Diccionariodedatos::eliminaEntidad(){
     char nombre[MAX];
 
     printf("\nNombre de la entidad a eliminar: ");
-    scanf(" %[^\n]", nombre);
+    leerCadena(nombre);
 
     long res = eliminaEntidad(nombre);
 
@@ -436,7 +442,7 @@ void Diccionariodedatos::consultaAtributos()
         {
             nuevo = leeAtributo(cab);
 
-            printf("\n%s %c %d %ld %d %s",
+            printf("\n %s %c %d %ld %d %s",
                    nuevo.nombre,
                    nuevo.tipo,
                    nuevo.tam,
@@ -454,7 +460,7 @@ void Diccionariodedatos::pideEntidad()
     ENTIDAD aux;
 
     printf("\nNombre entidad: ");
-    scanf(" %[^\n]",aux.nombre);
+    leerCadena(aux.nombre);
 
     dirActiva = buscaEntidad(aux);
 
@@ -469,19 +475,19 @@ ATRIBUTO Diccionariodedatos::capturaAtributo()
     ATRIBUTO atr;
 
     printf("\nNombre atributo: ");
-    scanf(" %[^\n]",atr.nombre);
+    leerCadena(atr.nombre);
 
     printf("Tipo: ");
-    scanf(" %c",&atr.tipo);
+    atr.tipo = leerEntero();
 
     printf("Tamano: ");
-    scanf("%d",&atr.tam);
+    atr.tam = leerEntero();
 
     printf("Clave: ");
-    scanf("%d",&atr.clave);
+    atr.clave = leerEntero();
 
     printf("Descripcion: ");
-    scanf(" %[^\n]",atr.descripcion);
+    leerCadena(atr.descripcion);
 
     atr.sig = -1;
 
@@ -603,7 +609,7 @@ void Diccionariodedatos::eliminaAtributos()
     if(dirActiva != -1)
     {
         printf("\nIngrese el nombre del atributo a eliminar: ");
-        scanf(" %[^\n]",nombre);
+        leerCadena(nombre);
 
         dir = buscaAtributo(nombre);
 
@@ -686,7 +692,7 @@ void Diccionariodedatos::modificaAtributo()
     if(dirActiva != -1)
     {
         printf("\nIngrese atributo a modificar: ");
-        scanf(" %[^\n]",nombre);
+        leerCadena(nombre);
 
         if(buscaAtributo(nombre) != -1)
         {

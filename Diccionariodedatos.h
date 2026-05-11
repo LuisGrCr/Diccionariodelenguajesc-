@@ -45,6 +45,7 @@ class Diccionariodedatos
     int abrirDiccionario();
 
     int leerEntero();
+    void leerCadena(char cadena[MAX]);
 
     //Menus
     void menuPrincipal(int *op);
