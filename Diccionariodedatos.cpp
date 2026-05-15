@@ -500,12 +500,12 @@ ATRIBUTO Diccionariodedatos::capturaAtributo()
 
     printf("\nNombre atributo: ");
     leerCadena(atr.nombre);
-
     printf("\nTipos de dato:");
-    printf("\n1.-Entero");
-    printf("\n2.-Cadena");
+    printf("\n1.-Cadena");
+    printf("\n2.-Entero");
     printf("\n3.-Float");
-    printf("\n4.-Char");
+    printf("\n4.-Double");
+    printf("\n5.-Long");
 
     printf("\nTipo: ");
     atr.tipo = leerEntero();
