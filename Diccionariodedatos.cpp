@@ -793,6 +793,78 @@ void *Diccionariodedatos::capturaBloque(){
     return bloque;
 }
 
+int Diccionariodedatos::comparaBloques(void *b1, void *b2)
+{
+    long desplazamiento = sizeof(long);
+
+    switch(arrAtributos[0].tipo)
+    {
+        case 1: // cadena
+            return strcmp(
+                (char*)b1 + desplazamiento,
+                (char*)b2 + desplazamiento
+            );
+
+        case 2: // entero
+        {
+            int a =
+                *((int*)((char*)b1 + desplazamiento));
+
+            int b =
+                *((int*)((char*)b2 + desplazamiento));
+
+            if(a > b) return 1;
+            if(a < b) return -1;
+
+            return 0;
+        }
+
+        case 3: // float
+        {
+            float a =
+                *((float*)((char*)b1 + desplazamiento));
+
+            float b =
+                *((float*)((char*)b2 + desplazamiento));
+
+            if(a > b) return 1;
+            if(a < b) return -1;
+
+            return 0;
+        }
+
+        case 4: // double
+        {
+            double a =
+                *((double*)((char*)b1 + desplazamiento));
+
+            double b =
+                *((double*)((char*)b2 + desplazamiento));
+
+            if(a > b) return 1;
+            if(a < b) return -1;
+
+            return 0;
+        }
+
+        case 5: // long
+        {
+            long a =
+                *((long*)((char*)b1 + desplazamiento));
+
+            long b =
+                *((long*)((char*)b2 + desplazamiento));
+
+            if(a > b) return 1;
+            if(a < b) return -1;
+
+            return 0;
+        }
+    }
+
+    return 0;
+}
+
 void Diccionariodedatos::creaRegistro(){
     printf ("trabajando en crear registro\n");
 }

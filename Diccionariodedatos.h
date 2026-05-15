@@ -86,6 +86,7 @@ class Diccionariodedatos
     long eliminaAtributo(char nombre[MAX]);
 
     void *capturaBloque();
+    int comparaBloques(void *b1, void *b2);
     void creaRegistro();
     void consultaRegistro();
     void eliminaRegistro();
