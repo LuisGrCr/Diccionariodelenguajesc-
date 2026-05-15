@@ -88,11 +88,14 @@ class Diccionariodedatos
     void *capturaBloque();
     int comparaBloques(void *b1, void *b2);
     long buscaBloque(void *bloque);
+    void *leeBloque(long dir);
+    void reescribeBloque(void *bloque,long dir);
+    long escribeBloque(void *bloque);
     void creaRegistro();
     void consultaRegistro();
     void eliminaRegistro();
     void modificaRegistro();
-    void *leeBloque(long dir);
+    
     
 
 };

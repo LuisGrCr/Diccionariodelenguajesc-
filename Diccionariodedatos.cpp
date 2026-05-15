@@ -900,7 +900,24 @@ void *Diccionariodedatos::leeBloque(long dir)
 
     return bloque;
 }
+//rescribe un bloque en una direccion especifica
+void Diccionariodedatos::reescribeBloque(void *bloque, long dir){
+    fseek(archivo, dir, SEEK_SET);
 
+    fwrite(bloque, tamBloque, 1, archivo);
+}
+long Diccionariodedatos::escribeBloque(void *bloque)
+{
+    long dir;
+
+    fseek(archivo, 0, SEEK_END);
+
+    dir = ftell(archivo);
+
+    fwrite(bloque, tamBloque, 1, archivo);
+
+    return dir;
+}
 
 void Diccionariodedatos::creaRegistro(){
     printf ("trabajando en crear registro\n");
