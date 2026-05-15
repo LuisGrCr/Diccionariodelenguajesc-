@@ -792,7 +792,7 @@ void *Diccionariodedatos::capturaBloque(){
     }
     return bloque;
 }
-
+//Funcion para comparar dos bloques segun el tipo del primer atributo
 int Diccionariodedatos::comparaBloques(void *b1, void *b2)
 {
     long desplazamiento = sizeof(long);
@@ -864,6 +864,43 @@ int Diccionariodedatos::comparaBloques(void *b1, void *b2)
 
     return 0;
 }
+//Funcion para buscar un bloque en la entidad activa
+long Diccionariodedatos::buscaBloque(void *bloque)
+{
+    long cab = activa.data;
+
+    void *actual;
+
+    while(cab != -1)
+    {
+        actual = leeBloque(cab);
+
+        if(comparaBloques(bloque, actual) == 0)
+        {
+            free(actual);
+
+            return cab;
+        }
+
+        cab = *((long*)actual);
+
+        free(actual);
+    }
+
+    return -1;
+}
+//lee un bloque desde una direccion especifica
+void *Diccionariodedatos::leeBloque(long dir)
+{
+    void *bloque = malloc(tamBloque);
+
+    fseek(archivo, dir, SEEK_SET);
+
+    fread(bloque, tamBloque, 1, archivo);
+
+    return bloque;
+}
+
 
 void Diccionariodedatos::creaRegistro(){
     printf ("trabajando en crear registro\n");
