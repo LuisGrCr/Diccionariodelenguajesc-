@@ -64,8 +64,6 @@ void Diccionariodedatos::menuPrincipal(int *op){
         }
     }while(*op != 3);
 }
-
-
 int Diccionariodedatos::nuevoDiccionario()
 {
     char nombre[50];
@@ -535,7 +533,6 @@ ATRIBUTO Diccionariodedatos::capturaAtributo()
 
     return atr;
 }
-
 //Busca un atributo por nombre en la entidad activa
 long Diccionariodedatos::buscaAtributo(char *atr)
 {
@@ -663,7 +660,6 @@ void Diccionariodedatos::eliminaAtributos()
             printf("\nAtributo eliminado");
         }
 }
-
 //Elimina un atributo de la lista enlazada
 long Diccionariodedatos::eliminaAtributo(char nombre[MAX])
 {
@@ -716,7 +712,7 @@ long Diccionariodedatos::eliminaAtributo(char nombre[MAX])
     //Caso 3: no encontrado
     return -1;
 }
-
+//funcion para modificar un atributo dado una entidad y un atributo
 void Diccionariodedatos::modificaAtributo()
 {
     char nombre[MAX];
