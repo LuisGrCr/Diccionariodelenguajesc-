@@ -754,13 +754,42 @@ void Diccionariodedatos::modificaAtributo()
         }
 }
 
+//------Funciones de bloques o tuplas------
+void *Diccionariodedatos::capturaBloque(){
+    void *bloque;
+    long desplazamiento =0;
+    bloque = malloc(tamBloque);
 
-void Diccionariodedatos::creaRegistro()
-{ printf("\nTrabajando...\n"); }
-void Diccionariodedatos::consultaRegistro()
-{ printf("\nTrabajando...\n"); }
-void Diccionariodedatos::eliminaRegistro()
-{ printf("\nTrabajando...\n"); }
-void Diccionariodedatos::modificaRegistro()
-{ printf("\nTrabajando...\n"); }
+    *((long*)(char*)(bloque + desplazamiento)) = -1;
+    desplazamiento += sizeof(long);
+
+    for(int i =0; i<NumAtributos; i++){
+        printf("\nIngrese %s: ", arrAtributos[i].nombre);
+        switch(arrAtributos[i].tipo){
+            case 1: //cadena
+                leerCadena((char*)(bloque + desplazamiento));
+                break;
+            case 2: //entero
+                *((int*)(bloque + desplazamiento)) = leerEntero();
+                break;
+            case 3: //float
+                printf("\nIngrese un numero decimal: ");
+                scanf("%f", (float*)((char*)(bloque + desplazamiento)));
+                getchar();
+                break;
+            case 4: //double
+                printf("\nIngrese un numero double: ");
+                scanf("%lf", (double*)((char*)(bloque + desplazamiento)));
+                getchar();
+                break;
+            case 5: //long
+                printf("\nIngrese un numero entero grande: ");
+                scanf("%ld", (long*)((char*)(bloque + desplazamiento)));
+                getchar();
+                break;
+        }
+        desplazamiento += arrAtributos[i].tam;
+    }
+    return bloque;
+}
 

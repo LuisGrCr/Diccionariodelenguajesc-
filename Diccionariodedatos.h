@@ -36,7 +36,9 @@ class Diccionariodedatos
     long dirActiva;
     long tamBloque;
     int NumAtributos;
+    ATRIBUTO arrAtributos[MAX];
     char nombreArchivo [MAX];
+
     
     public:
     Diccionariodedatos();
@@ -83,7 +85,7 @@ class Diccionariodedatos
     void insertarAtributo(ATRIBUTO nuevo,long dir);
     long eliminaAtributo(char nombre[MAX]);
 
-    
+    void *capturaBloque();
     void creaRegistro();
     void consultaRegistro();
     void eliminaRegistro();
