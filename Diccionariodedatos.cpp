@@ -769,6 +769,7 @@ void Diccionariodedatos::modificaAtributo()
 
 void Diccionariodedatos::cargaAtributos()
 {
+    
     long cab;
 
     NumAtributos = 0;
@@ -782,10 +783,10 @@ void Diccionariodedatos::cargaAtributos()
 
         NumAtributos++;
 
-        cab =
-            arrAtributos[NumAtributos-1].sig;
+        cab = arrAtributos[NumAtributos-1].sig;
     }
 }
+
 
 //------Funciones de bloques o tuplas------
 void *Diccionariodedatos::capturaBloque(){
