@@ -139,7 +139,20 @@ void Diccionariodedatos::menuEntidades(int *op){
             }
 
     break;
-            case 6: menuDatos(op); break;
+          case 6:
+
+    pideEntidad();
+
+    if(dirActiva != -1)
+    {
+        cargaAtributos();
+
+        calculaTamBloque();
+
+        menuDatos(op);
+    }
+
+    break;
         }
     }while(*op != 7);
 }
@@ -754,6 +767,26 @@ void Diccionariodedatos::modificaAtributo()
         }
 }
 
+void Diccionariodedatos::cargaAtributos()
+{
+    long cab;
+
+    NumAtributos = 0;
+
+    cab = activa.atr;
+
+    while(cab != -1)
+    {
+        arrAtributos[NumAtributos] =
+            leeAtributo(cab);
+
+        NumAtributos++;
+
+        cab =
+            arrAtributos[NumAtributos-1].sig;
+    }
+}
+
 //------Funciones de bloques o tuplas------
 void *Diccionariodedatos::capturaBloque(){
     void *bloque;
@@ -919,12 +952,129 @@ long Diccionariodedatos::escribeBloque(void *bloque)
     return dir;
 }
 
-void Diccionariodedatos::creaRegistro(){
-    printf ("trabajando en crear registro\n");
+void Diccionariodedatos::calculaTamBloque()
+{
+    tamBloque = sizeof(long);
+
+    for(int i=0;i<NumAtributos;i++)
+    {
+        tamBloque += arrAtributos[i].tam;
+    }
+
+    printf("\nTamano bloque = %ld\n",
+           tamBloque);
 }
-void Diccionariodedatos::consultaRegistro(){
-    printf ("trabajando en consultar registro\n");
+
+void Diccionariodedatos::altaBloque()
+{
+    void *nuevo;
+    long dir;
+
+    nuevo = capturaBloque();
+
+    if(buscaBloque(nuevo) == -1)
+    {
+        dir = escribeBloque(nuevo);
+
+        //printf("\nBloque guardado en direccion: %ld", dir);
+
+        insertaBloque(nuevo, dir);
+    }
+    else
+    {
+        printf("\nEl bloque ya existe");
+    }
+
+    free(nuevo);
 }
+void Diccionariodedatos::insertaBloque(void *nuevo,long dirNuevo)
+{
+    if(activa.data == -1)
+    {
+        activa.data = dirNuevo;
+
+        reescribeEntidad(activa,dirActiva);
+    }
+    else
+    {
+        void *act = leeBloque(activa.data);
+
+        if(comparaBloques(nuevo,act) < 0)
+        {
+            *((long*)nuevo)=activa.data;
+
+            reescribeBloque(nuevo,dirNuevo);
+
+            activa.data=dirNuevo;
+
+            reescribeEntidad(activa,dirActiva);
+        }
+        else
+        {
+            long cab=activa.data;
+            long dirAnt=cab;
+
+            void *bloqueAnt=act;
+
+            cab=*((long*)act);
+
+            if(cab!=-1)
+                act=leeBloque(cab);
+
+            while(cab!=-1 &&
+                  comparaBloques(nuevo,act)>0)
+            {
+                dirAnt=cab;
+
+                bloqueAnt=act;
+
+                cab=*((long*)act);
+
+                if(cab!=-1)
+                    act=leeBloque(cab);
+            }
+
+            *((long*)nuevo)=cab;
+
+            reescribeBloque(nuevo,dirNuevo);
+
+            *((long*)bloqueAnt)=dirNuevo;
+
+            reescribeBloque(bloqueAnt,dirAnt);
+        }
+    }
+}
+
+void Diccionariodedatos::creaRegistro()
+{
+    altaBloque();
+}
+
+void Diccionariodedatos::consultaRegistro()
+{
+    long cab = activa.data;
+
+    void *bloque;
+
+    while(cab != -1)
+    {
+        bloque = leeBloque(cab);
+
+        printf("\nID: %d",
+               *((int*)((char*)bloque + sizeof(long))));
+
+        printf("\tNombre: %s",
+               (char*)bloque + sizeof(long)
+               + arrAtributos[0].tam);
+
+        cab = *((long*)bloque);
+
+        free(bloque);
+    }
+
+    printf("\n");
+}
+
 void Diccionariodedatos::eliminaRegistro(){
     printf ("trabajando en eliminar registro\n");
 }

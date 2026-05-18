@@ -91,6 +91,11 @@ class Diccionariodedatos
     void *leeBloque(long dir);
     void reescribeBloque(void *bloque,long dir);
     long escribeBloque(void *bloque);
+    void cargaAtributos();
+    void calculaTamBloque();
+    void altaBloque();
+    void insertaBloque(void *nuevo,long dir);
+    
     void creaRegistro();
     void consultaRegistro();
     void eliminaRegistro();
