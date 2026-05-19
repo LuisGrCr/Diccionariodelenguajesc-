@@ -439,6 +439,10 @@ void Diccionariodedatos::creaAtributo()
     long dir;
 
     nuevo = capturaAtributo();
+    if(strcmp(nuevo.nombre,"")==0)
+{
+    return;
+}
 
     if(buscaAtributo(nuevo.nombre) == -1)
     {
@@ -525,8 +529,19 @@ ATRIBUTO Diccionariodedatos::capturaAtributo()
     atr.tam = leerEntero();
 
     printf("Es clave primaria? (S/N): ");
-    scanf(" %c",&atr.clave);
-    getchar();
+scanf(" %c",&atr.clave);
+getchar();
+
+if((atr.clave=='S' ||
+    atr.clave=='s')
+    && existeKP())
+{
+    printf("\nYa existe una clave primaria\n");
+
+    strcpy(atr.nombre,"");
+
+    return atr;
+}
 
     if(atr.clave == 'S' || atr.clave == 's')
     {
@@ -546,6 +561,7 @@ ATRIBUTO Diccionariodedatos::capturaAtributo()
 
     return atr;
 }
+
 //Busca un atributo por nombre en la entidad activa
 long Diccionariodedatos::buscaAtributo(char *atr)
 {
@@ -787,6 +803,27 @@ void Diccionariodedatos::cargaAtributos()
     }
 }
 
+int Diccionariodedatos::existeKP()
+{
+    long cab = activa.atr;
+
+    ATRIBUTO actual;
+
+    while(cab != -1)
+    {
+        actual = leeAtributo(cab);
+
+        if(actual.clave == 'S' ||
+           actual.clave == 's')
+        {
+            return 1;
+        }
+
+        cab = actual.sig;
+    }
+
+    return 0;
+}
 
 //------Funciones de bloques o tuplas------
 void *Diccionariodedatos::capturaBloque(){
@@ -1061,19 +1098,52 @@ void Diccionariodedatos::consultaRegistro()
     {
         bloque = leeBloque(cab);
 
-        printf("\nID: %d",
-               *((int*)((char*)bloque + sizeof(long))));
+        long desp = sizeof(long);
 
-        printf("\tNombre: %s",
-               (char*)bloque + sizeof(long)
-               + arrAtributos[0].tam);
+        for(int i=0; i<NumAtributos; i++)
+        {
+            printf("%s: ",
+                   arrAtributos[i].nombre);
+
+            switch(arrAtributos[i].tipo)
+            {
+                case 1:
+                    printf("%s",
+                    (char*)bloque+desp);
+                    break;
+
+                case 2:
+                    printf("%d",
+                    *((int*)((char*)bloque+desp)));
+                    break;
+
+                case 3:
+                    printf("%f",
+                    *((float*)((char*)bloque+desp)));
+                    break;
+
+                case 4:
+                    printf("%lf",
+                    *((double*)((char*)bloque+desp)));
+                    break;
+
+                case 5:
+                    printf("%ld",
+                    *((long*)((char*)bloque+desp)));
+                    break;
+            }
+
+            printf("\t");
+
+            desp += arrAtributos[i].tam;
+        }
+
+        printf("\n");
 
         cab = *((long*)bloque);
 
         free(bloque);
     }
-
-    printf("\n");
 }
 
 void Diccionariodedatos::eliminaRegistro(){

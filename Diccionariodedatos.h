@@ -95,12 +95,13 @@ class Diccionariodedatos
     void calculaTamBloque();
     void altaBloque();
     void insertaBloque(void *nuevo,long dir);
+    int existeKP();
     
     void creaRegistro();
     void consultaRegistro();
     void eliminaRegistro();
     void modificaRegistro();
-    
+
     
 
 };
