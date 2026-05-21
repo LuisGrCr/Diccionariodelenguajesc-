@@ -540,9 +540,11 @@ ATRIBUTO Diccionariodedatos::capturaAtributo()
     printf("\nTipo: ");
     atr.tipo = leerEntero();
 
+    
+    switch (atr.tipo)
+    {
+    case 1:
     printf("Tamano: ");
-    atr.tam = leerEntero();
-
     printf("Es clave primaria? (S/N): ");
     scanf(" %c", &op);
     getchar();
@@ -558,6 +560,41 @@ ATRIBUTO Diccionariodedatos::capturaAtributo()
         getchar();
         atr.nulos = (op == 'S' || op == 's') ? leerEntero(): 0;
     }
+        break;
+        case 2:
+        printf("Permitir nulos? (S/N): ");
+        scanf(" %c", &op);
+        getchar();
+        atr.nulos = (op == 'S' || op == 's') ? leerEntero(): 0;
+        atr.tam = 4;
+        break;
+
+        case 3:
+        printf("Permitir nulos? (S/N): ");
+        scanf(" %c", &op);
+        getchar();
+        atr.nulos = (op == 'S' || op == 's') ? leerEntero(): 0;
+        atr.tam = 4;
+        break;
+        case 4:
+        printf("Permitir nulos? (S/N): ");
+        scanf(" %c", &op);
+        getchar();
+        atr.nulos = (op == 'S' || op == 's') ? leerEntero(): 0;
+        atr.tam = 8;
+        break;
+        case 5:
+        printf("Permitir nulos? (S/N): ");
+        scanf(" %c", &op);
+        getchar();
+        atr.nulos = (op == 'S' || op == 's') ? leerEntero(): 0;
+        atr.tam = 8;
+        break;
+    default:
+        break;
+    }
+
+   
     
 
 
