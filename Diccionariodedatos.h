@@ -95,7 +95,7 @@ class Diccionariodedatos
     void calculaTamBloque();
     void altaBloque();
     void insertaBloque(void *nuevo,long dir);
-    int existeKP();
+    bool verificaClavePrimaria();
     
     void creaRegistro();
     void consultaRegistro();
