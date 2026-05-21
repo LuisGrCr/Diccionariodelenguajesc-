@@ -1069,27 +1069,84 @@ void Diccionariodedatos::creaRegistro()
 
 void Diccionariodedatos::consultaRegistro()
 {
-    long cab = activa.data;
+    if(activa.data == -1)
+{
+    printf("\nNo hay registros\n");
+    return;
+}
 
+    long cab=activa.data;
     void *bloque;
 
-    while(cab != -1)
+    while(cab!=-1)
     {
-        bloque = leeBloque(cab);
+        bloque=leeBloque(cab);
 
-        printf("\nID: %d",
-               *((int*)((char*)bloque + sizeof(long))));
+        long desplazamiento=
+        sizeof(long);
 
-        printf("\tNombre: %s",
-               (char*)bloque + sizeof(long)
-               + arrAtributos[0].tam);
+        for(int i=0;i<NumAtributos;i++)
+        {
+            printf("\n%s: ",
+            arrAtributos[i].nombre);
 
-        cab = *((long*)bloque);
+            switch(arrAtributos[i].tipo)
+            {
+            case 1:
+
+                printf("%s",
+                (char*)bloque+
+                desplazamiento);
+
+                break;
+
+            case 2:
+
+                printf("%d",
+                *((int*)((char*)
+                bloque+
+                desplazamiento)));
+
+                break;
+
+            case 3:
+
+                printf("%f",
+                *((float*)((char*)
+                bloque+
+                desplazamiento)));
+
+                break;
+
+            case 4:
+
+                printf("%lf",
+                *((double*)((char*)
+                bloque+
+                desplazamiento)));
+
+                break;
+
+            case 5:
+
+                printf("%ld",
+                *((long*)((char*)
+                bloque+
+                desplazamiento)));
+
+                break;
+            }
+
+            desplazamiento+=
+            arrAtributos[i].tam;
+        }
+
+        cab=*((long*)bloque);
 
         free(bloque);
-    }
 
-    printf("\n");
+        printf("\n");
+    }
 }
 
 bool Diccionariodedatos::verificaClavePrimaria()
@@ -1125,10 +1182,168 @@ bool Diccionariodedatos::verificaClavePrimaria()
     return true;
 }
 
+void *Diccionariodedatos::pideClaveBloque()
+{
+    void *blq;
 
-void Diccionariodedatos::eliminaRegistro(){
-    printf ("trabajando en eliminar registro\n");
+    blq = malloc(tamBloque);
+
+    *((long*)blq) = -1;
+
+    printf("\nIngrese %s: ",
+           arrAtributos[0].nombre);
+
+    switch(arrAtributos[0].tipo)
+    {
+        case 1:
+
+            leerCadena(
+            (char*)blq+sizeof(long));
+
+            break;
+
+        case 2:
+
+            *((int*)
+            ((char*)blq+
+            sizeof(long)))
+            =
+            leerEntero();
+
+            break;
+
+        case 3:
+
+            *((float*)
+            ((char*)blq+
+            sizeof(long)))
+            =
+            leerFloat();
+
+            break;
+
+        case 4:
+
+            *((double*)
+            ((char*)blq+
+            sizeof(long)))
+            =
+            leerFloat();
+
+            break;
+
+        case 5:
+
+            *((long*)
+            ((char*)blq+
+            sizeof(long)))
+            =
+            leerEntero();
+
+            break;
+    }
+
+    return blq;
 }
+
+void Diccionariodedatos::eliminaRegistro()
+{
+    void *bloque;
+    long dir;
+
+    bloque = pideClaveBloque();
+
+    dir = eliminaBloque(bloque);
+
+    if(dir != -1)
+    {
+        printf("\nRegistro eliminado");
+    }
+    else
+    {
+        printf("\nRegistro no encontrado");
+    }
+
+    free(bloque);
+}
+
+long Diccionariodedatos::eliminaBloque(
+void *bloque)
+{
+    long cab=
+    activa.data;
+
+    if(cab==-1)
+        return -1;
+
+    void *actual=
+    leeBloque(cab);
+
+    if(comparaBloques(
+    bloque,
+    actual)==0)
+    {
+        activa.data=
+        *((long*)actual);
+
+        reescribeEntidad(
+        activa,
+        dirActiva);
+
+        free(actual);
+
+        return cab;
+    }
+
+    long dirAnt=
+    cab;
+
+    void *ant=
+    actual;
+
+    cab=
+    *((long*)actual);
+
+    if(cab!=-1)
+        actual=
+        leeBloque(cab);
+
+    while(cab!=-1 &&
+    comparaBloques(
+    bloque,
+    actual)!=0)
+    {
+        dirAnt=
+        cab;
+
+        ant=
+        actual;
+
+        cab=
+        *((long*)actual);
+
+        if(cab!=-1)
+        actual=
+        leeBloque(cab);
+    }
+
+    if(cab!=-1)
+    {
+        *((long*)ant)=
+        *((long*)actual);
+
+        reescribeBloque(
+        ant,
+        dirAnt);
+
+        free(actual);
+
+        return cab;
+    }
+
+    return -1;
+}
+
 void Diccionariodedatos::modificaRegistro(){
     printf ("trabajando en modificar registro\n");
 }

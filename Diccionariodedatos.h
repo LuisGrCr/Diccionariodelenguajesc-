@@ -98,13 +98,14 @@ class Diccionariodedatos
     void insertaBloque(void *nuevo,long dir);
     bool verificaClavePrimaria();
     
+    void *pideClaveBloque();
     void creaRegistro();
     void consultaRegistro();
     void eliminaRegistro();
+    long eliminaBloque(void *bloque);
     void modificaRegistro();
 
     
-
 };
 
 
