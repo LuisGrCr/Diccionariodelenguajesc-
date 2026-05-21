@@ -27,6 +27,24 @@ int Diccionariodedatos::leerEntero()
         printf("Entrada invalida. Ingresa un numero: ");
     }
 }
+float Diccionariodedatos::leerFloat()
+{
+    float num;
+    char buffer[MAX];
+
+    while(1)
+    {
+        fgets(buffer, sizeof(buffer), stdin);
+
+        // Validar que sea float
+        if(sscanf(buffer, "%f", &num) == 1)
+        {
+            return num;
+        }
+
+        printf("Entrada invalida. Ingresa un numero: ");
+    }
+}
 //funcion reutilizable para poder leer cadenas y evitar problemas al ingresar datos
 void Diccionariodedatos::leerCadena(char cadena[MAX])
 {
@@ -145,7 +163,7 @@ void Diccionariodedatos::menuEntidades(int *op){
                 cargaAtributos();
                 if (!verificaClavePrimaria())
                 {
-                    printf("\nLa entidad no tiene clave primaria definida\n");
+
                     break;
                 }
                     calculaTamBloque();
@@ -810,19 +828,14 @@ void *Diccionariodedatos::capturaBloque(){
                 *((int*)((char*)bloque + desplazamiento)) = leerEntero();
                 break;
             case 3: //float
-                printf("\nIngrese un numero decimal: ");
-                scanf("%f", (float*)((char*)bloque + desplazamiento));
-                getchar();
+                *(("%f", (float*)((char*)bloque + desplazamiento))) = leerFloat();
                 break;
             case 4: //double
                 printf("\nIngrese un numero double: ");
-                scanf("%lf", (double*)((char*)bloque + desplazamiento));
-                getchar();
+                *(("%lf", (double*)((char*)bloque + desplazamiento))) = leerFloat();
                 break;
             case 5: //long
-                printf("\nIngrese un numero entero grande: ");
-                scanf("%ld", (long*)((char*)bloque + desplazamiento));
-                getchar();
+                *(("%ld", (long*)((char*)bloque + desplazamiento))) = leerEntero();
                 break;
         }
         desplazamiento += arrAtributos[i].tam;
@@ -1081,29 +1094,29 @@ void Diccionariodedatos::consultaRegistro()
 
 bool Diccionariodedatos::verificaClavePrimaria()
 {
+    int cont = 0;
     int posClave = -1;
 
     for(int i = 0; i < NumAtributos; i++)
     {
         if(arrAtributos[i].clave == 1)
         {
+            cont++;
             posClave = i;
-            break;
+
         }
     }
-
-    // No existe clave primaria
-    if(posClave == -1)
+    if(cont == 0)
     {
+        printf("\nNo hay clave primaria\n");
         return false;
     }
-
-    // Si ya está en la posición 0 no hacer nada
-    if(posClave == 0)
+    if (cont > 1)
     {
-        return true;
+        printf("\nHay mas de una clave primaria\n");
+        return false;
+        
     }
-
     // Intercambiar con el índice 0
     ATRIBUTO aux = arrAtributos[0];
     arrAtributos[0] = arrAtributos[posClave];
