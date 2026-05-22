@@ -48,8 +48,9 @@ class Diccionariodedatos
 
     int leerEntero();
     float leerFloat();
-    void leerCadena(char cadena[MAX]);
+    double leerDouble();
 
+    void leerCadena(char cadena[MAX]);
     //Menus
     void menuPrincipal(int *op);
     void menuEntidades(int *op);
@@ -104,7 +105,7 @@ class Diccionariodedatos
     void eliminaRegistro();
     long eliminaBloque(void *bloque);
     void modificaRegistro();
-
+    bool hayRegistros();
     
 };
 

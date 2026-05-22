@@ -45,6 +45,24 @@ float Diccionariodedatos::leerFloat()
         printf("Entrada invalida. Ingresa un numero: ");
     }
 }
+
+double Diccionariodedatos::leerDouble()
+{
+    double num;
+    char buffer[MAX];
+
+    while(1)
+    {
+        fgets(buffer, sizeof(buffer), stdin);
+
+        if(sscanf(buffer, "%lf", &num) == 1)
+        {
+            return num;
+        }
+
+        printf("Entrada invalida. Ingresa un numero: ");
+    }
+}
 //funcion reutilizable para poder leer cadenas y evitar problemas al ingresar datos
 void Diccionariodedatos::leerCadena(char cadena[MAX])
 {
@@ -82,6 +100,7 @@ void Diccionariodedatos::menuPrincipal(int *op){
         }
     }while(*op != 3);
 }
+
 int Diccionariodedatos::nuevoDiccionario()
 {
     char nombre[50];
@@ -194,6 +213,7 @@ void Diccionariodedatos::menuAtributos(int op){
         }
     }while(op != 5);
 }
+
 void Diccionariodedatos::menuDatos(int *op){
     do{
         printf("\n-----Menu de Datos-----\n");
@@ -452,6 +472,11 @@ void Diccionariodedatos::insertarEntidad(ENTIDAD nuevo, long dir){
 //Captura los datos de un atributo
 void Diccionariodedatos::creaAtributo()
 {
+    if(hayRegistros())
+    {
+        printf("\nNo se pueden agregar atributos porque ya hay registros en la entidad\n");
+        return;
+    }
     ATRIBUTO nuevo;
 
     long dir;
@@ -525,6 +550,12 @@ void Diccionariodedatos::pideEntidad()
 //Captura los datos de un atributo
 ATRIBUTO Diccionariodedatos::capturaAtributo()
 {
+    if(hayRegistros())
+    {
+        printf("\nNo se pueden agregar atributos porque ya hay registros en la entidad\n");
+        ATRIBUTO atr;
+        return atr;
+    }
     ATRIBUTO atr;
     char op;
 
@@ -713,6 +744,11 @@ void Diccionariodedatos::insertarAtributo(ATRIBUTO nuevo,long dir)
 //Da de baja un atributo
 void Diccionariodedatos::eliminaAtributos()
 {
+    if(hayRegistros())
+    {
+        printf("\nNo se pueden eliminar atributos porque ya hay registros en la entidad\n");
+        return;
+    }
     char nombre[MAX];
 
     long dir;
@@ -788,6 +824,11 @@ long Diccionariodedatos::eliminaAtributo(char nombre[MAX])
 //funcion para modificar un atributo dado una entidad y un atributo
 void Diccionariodedatos::modificaAtributo()
 {
+    if(hayRegistros())
+    {
+        printf("\nNo se pueden modificar atributos porque ya hay registros en la entidad\n");
+        return;
+    }
     char nombre[MAX];
 
     ATRIBUTO nuevo;
@@ -865,14 +906,14 @@ void *Diccionariodedatos::capturaBloque(){
                 *((int*)((char*)bloque + desplazamiento)) = leerEntero();
                 break;
             case 3: //float
-                *(("%f", (float*)((char*)bloque + desplazamiento))) = leerFloat();
+                *((float*)((char*)bloque + desplazamiento)) = leerFloat();
                 break;
             case 4: //double
-                printf("\nIngrese un numero double: ");
-                *(("%lf", (double*)((char*)bloque + desplazamiento))) = leerFloat();
+                *((double*)((char*)bloque + desplazamiento)) = leerDouble( );
+                getchar();
                 break;
             case 5: //long
-                *(("%ld", (long*)((char*)bloque + desplazamiento))) = leerEntero();
+                *((long*)((char*)bloque + desplazamiento)) = leerEntero();
                 break;
         }
         desplazamiento += arrAtributos[i].tam;
@@ -993,6 +1034,7 @@ void Diccionariodedatos::reescribeBloque(void *bloque, long dir){
 
     fwrite(bloque, tamBloque, 1, archivo);
 }
+
 long Diccionariodedatos::escribeBloque(void *bloque)
 {
     long dir;
@@ -1041,6 +1083,7 @@ void Diccionariodedatos::altaBloque()
 
     free(nuevo);
 }
+
 void Diccionariodedatos::insertaBloque(void *nuevo,long dirNuevo)
 {
     if(activa.data == -1)
@@ -1107,82 +1150,67 @@ void Diccionariodedatos::creaRegistro()
 void Diccionariodedatos::consultaRegistro()
 {
     if(activa.data == -1)
-{
-    printf("\nNo hay registros\n");
-    return;
-}
+    {
+        printf("\nNo hay registros\n");
+        return;
+    }
 
-    long cab=activa.data;
+    long cab = activa.data;
+
     void *bloque;
 
-    while(cab!=-1)
+    printf("\n================ REGISTROS ================\n");
+
+    while(cab != -1)
     {
-        bloque=leeBloque(cab);
+        bloque = leeBloque(cab);
 
-        long desplazamiento=
-        sizeof(long);
+        long desplazamiento = sizeof(long);
 
-        for(int i=0;i<NumAtributos;i++)
+        printf("\n-------------------------------------------\n");
+
+        for(int i = 0; i < NumAtributos; i++)
         {
-            printf("\n%s: ",
-            arrAtributos[i].nombre);
+            printf("%-15s : ", arrAtributos[i].nombre);
 
             switch(arrAtributos[i].tipo)
             {
-            case 1:
+                case 1: // cadena
 
-                printf("%s",
-                (char*)bloque+
-                desplazamiento);
+                    printf("%-20s",
+                           (char*)bloque + desplazamiento);
 
-                break;
+                    break;
 
-            case 2:
+                case 2: // entero
 
-                printf("%d",
-                *((int*)((char*)
-                bloque+
-                desplazamiento)));
+                    printf("%-20d",
+                           *((int*)((char*)bloque + desplazamiento)));
 
-                break;
+                    break;
 
-            case 3:
+                case 3: // float
 
-                printf("%f",
-                *((float*)((char*)
-                bloque+
-                desplazamiento)));
+                    printf("%-20.2f",*((float*)((char*)bloque + desplazamiento)));
+                    break;
 
-                break;
+                case 4: // double
 
-            case 4:
+                    printf("%-20.2lf",*((double*)((char*)bloque + desplazamiento)));
+                    break;
 
-                printf("%lf",
-                *((double*)((char*)
-                bloque+
-                desplazamiento)));
+                case 5: // long
 
-                break;
-
-            case 5:
-
-                printf("%ld",
-                *((long*)((char*)
-                bloque+
-                desplazamiento)));
-
-                break;
+                    printf("%-20ld",*((long*)((char*)bloque + desplazamiento)));
+                    break;
             }
 
-            desplazamiento+=
-            arrAtributos[i].tam;
+            printf("\n");
+            desplazamiento += arrAtributos[i].tam;
         }
-
-        cab=*((long*)bloque);
-
+        printf("-------------------------------------------\n");
+        cab = *((long*)bloque);
         free(bloque);
-
-        printf("\n");
     }
 }
 
@@ -1234,48 +1262,29 @@ void *Diccionariodedatos::pideClaveBloque()
     {
         case 1:
 
-            leerCadena(
-            (char*)blq+sizeof(long));
-
+            leerCadena((char*)blq+sizeof(long));
             break;
 
         case 2:
 
-            *((int*)
-            ((char*)blq+
-            sizeof(long)))
-            =
-            leerEntero();
-
+            *((int*)((char*)blq+sizeof(long)))= leerEntero();
             break;
 
         case 3:
 
-            *((float*)
-            ((char*)blq+
-            sizeof(long)))
-            =
-            leerFloat();
+            *((float*)((char*)blq+sizeof(long))) = leerFloat();
 
             break;
 
         case 4:
 
-            *((double*)
-            ((char*)blq+
-            sizeof(long)))
-            =
-            leerFloat();
+            *((double*)((char*)blq+sizeof(long)))=leerDouble();
 
             break;
 
         case 5:
 
-            *((long*)
-            ((char*)blq+
-            sizeof(long)))
-            =
-            leerEntero();
+            *((long*)((char*)blq+sizeof(long)))=leerEntero();
 
             break;
     }
@@ -1304,8 +1313,7 @@ void Diccionariodedatos::eliminaRegistro()
     free(bloque);
 }
 
-long Diccionariodedatos::eliminaBloque(
-void *bloque)
+long Diccionariodedatos::eliminaBloque(void *bloque)
 {
     long cab=
     activa.data;
@@ -1313,65 +1321,45 @@ void *bloque)
     if(cab==-1)
         return -1;
 
-    void *actual=
-    leeBloque(cab);
+    void *actual= leeBloque(cab);
 
-    if(comparaBloques(
-    bloque,
-    actual)==0)
+    if(comparaBloques(bloque,actual)==0)
     {
-        activa.data=
-        *((long*)actual);
+        activa.data=*((long*)actual);
 
-        reescribeEntidad(
-        activa,
-        dirActiva);
+        reescribeEntidad(activa,dirActiva);
 
         free(actual);
 
         return cab;
     }
 
-    long dirAnt=
-    cab;
+    long dirAnt=cab;
 
-    void *ant=
-    actual;
+    void *ant=actual;
 
-    cab=
-    *((long*)actual);
+    cab=*((long*)actual);
 
     if(cab!=-1)
-        actual=
-        leeBloque(cab);
+        actual=leeBloque(cab);
 
-    while(cab!=-1 &&
-    comparaBloques(
-    bloque,
-    actual)!=0)
+    while(cab!=-1 &&comparaBloques(bloque,actual)!=0)
     {
-        dirAnt=
-        cab;
+        dirAnt=cab;
 
-        ant=
-        actual;
+        ant=actual;
 
-        cab=
-        *((long*)actual);
+        cab=*((long*)actual);
 
         if(cab!=-1)
-        actual=
-        leeBloque(cab);
+        actual=leeBloque(cab);
     }
 
     if(cab!=-1)
     {
-        *((long*)ant)=
-        *((long*)actual);
+        *((long*)ant)=*((long*)actual);
 
-        reescribeBloque(
-        ant,
-        dirAnt);
+        reescribeBloque(ant,dirAnt);
 
         free(actual);
 
@@ -1385,3 +1373,12 @@ void Diccionariodedatos::modificaRegistro(){
     printf ("trabajando en modificar registro\n");
 }
 
+bool Diccionariodedatos::hayRegistros()
+{
+    if(activa.data != -1)
+    {
+        return true;
+    }
+
+    return false;
+}
